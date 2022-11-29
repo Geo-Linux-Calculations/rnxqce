@@ -3,31 +3,39 @@
 #---------------------------------------------------------
 PGM      = rnxqce
 FC       = gfortran
-FFLAGS   = -Wall
-RM       = rm
+FCFLAGS  = -Wall -Isrc -Jsrc
+RM       = rm -f
 SRCS     = \
-           f90/m_qc_multipath.f90 \
-           f90/m_qc_snr.f90 \
-           f90/m_rnxqce_frequency.f90 \
-           f90/m_rnxqce_rinexmodify.f90 \
-           f90/m_rnxqce_vertical_angel.f90 \
-           f90/m_qc_findlack.f90 \
-           f90/m_qc_slip.f90 \
-           f90/m_rnxqce_control.f90 \
-           f90/m_rnxqce_navread.f90 \
-           f90/m_rnxqce_rinexread.f90 \
-           f90/calculatesiteposition.f90 \
-           f90/clockbias.f90 \
-           f90/coordinate.f90 \
-           f90/earthrot.f90 \
-           f90/get_rnxqce_args.f90 \
-           f90/parameters.f90 \
-           f90/timetransform.f90 \
-           f90/rnxqce.f90
+           src/parameters.f90 \
+           src/m_rnxqce_control.f90 \
+           src/coordinate.f90 \
+           src/timetrans.f90 \
+           src/m_rnxqce_rinexread.f90 \
+           src/m_qc_findlack.f90 \
+           src/m_rnxqce_frequency.f90 \
+           src/m_qc_multipath.f90 \
+           src/m_qc_snr.f90 \
+           src/m_rnxqce_rinexmodify.f90 \
+           src/m_rnxqce_navread.f90 \
+           src/calculatesiteposition.f90 \
+           src/clockbias.f90 \
+           src/earthrot.f90 \
+           src/vertical_angle.f90 \
+           src/m_qc_slip.f90 \
+           src/get_rnxqce_args.f90 \
+           src/rnxqce.f90
+OBJS     = $(SRCS:%.f90=%.o)
+MODS     = $(SRCS:%.f90=%.mod)
 
 #-------------------------------------
-$(PGM): $(SRCS)
-	$(FC) $(FFLAGS) -o $@ $^
+
+all: $(PGM)
+
+$(PGM): $(OBJS)
+	$(FC) $(FCFLAGS) $^ -o $@
+
+%.o : %.f90
+	$(FC) $(FCFLAGS) -c $< -o $@
 
 clean:
-	$(RM) -f *.mod $(PGM)
+	$(RM) $(PGM) $(OBJS) $(MODS)
